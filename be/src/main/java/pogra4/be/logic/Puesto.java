@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +35,9 @@ public class Puesto {
 
     @Column(name = "tipo", length = 45)
     private String tipo;
+
+    @OneToMany(mappedBy = "puesto", fetch = FetchType.EAGER)
+    private List<PuestoHasCaracteristica> caracteristicas = new ArrayList<>();
 
 
 }

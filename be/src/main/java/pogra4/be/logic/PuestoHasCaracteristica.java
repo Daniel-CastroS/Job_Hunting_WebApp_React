@@ -3,6 +3,7 @@ package pogra4.be.logic;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -12,6 +13,7 @@ public class PuestoHasCaracteristica {
     @EmbeddedId
     private PuestoHasCaracteristicaId id;
 
+    @JsonIgnore
     @MapsId("puestoId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "Puesto_id", nullable = false)

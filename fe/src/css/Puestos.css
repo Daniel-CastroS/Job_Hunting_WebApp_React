@@ -1,0 +1,132 @@
+.puestos-header {
+    text-align: left;
+    margin-bottom: 40px;
+    padding: 0 20px;
+}
+
+.puestos-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #1a232f;
+    margin: 0 0 8px 0;
+}
+
+.puestos-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.puestos-container {
+    padding: 0 20px;
+}
+
+#listadoDiv {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: white;
+    padding: 16px;
+}
+
+.card-empresa {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-body {
+    padding: 16px;
+    flex: 1;
+}
+
+.card-descripcion {
+    color: black;
+    font-size: 18px;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+.card-salario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.card-salario .label {
+    color: black;
+    font-weight: 500;
+}
+
+.card-salario .value {
+    color: darkblue;
+    font-weight: 600;
+}
+
+.card-footer {
+    padding: 12px 16px 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.caracteristicas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag {
+    display: inline-block;
+    background: rgba(42, 123, 155, 0.15);
+    color: rgba(42, 123, 155, 1);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.sinCaract {
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    padding: 40px 20px;
+    width: 100%;
+}
