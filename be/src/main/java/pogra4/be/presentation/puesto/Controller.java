@@ -1,14 +1,14 @@
 package pogra4.be.presentation.puesto;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import pogra4.be.logic.Caracteristica;
 import pogra4.be.logic.Puesto;
 import pogra4.be.logic.Service;
+
 import java.util.List;
 
-@RestController("puestos")
+@RestController
 @RequestMapping("/api/puestos")
 public class Controller {
 
@@ -20,16 +20,26 @@ public class Controller {
         return service.getUltimosPuestosPublicos();
     }
 
-    @GetMapping("/caracteristicas")
-    public Iterable<?> getCaracteristicas() {
-        return service.carecteristicasAll();
-    }
-
     @GetMapping("/buscar")
     public List<Puesto> buscar(@RequestParam(required = false) List<String> caracteristicaIds) {
         if (caracteristicaIds == null || caracteristicaIds.isEmpty()) {
-            return List.of();
+            return service.getUltimosPuestosPublicos();
         }
         return service.buscarPuestosPublicos(caracteristicaIds);
+    }
+
+    @GetMapping("/caracteristicas")
+    public Iterable<Caracteristica> getRaices() {
+        return service.getRaices();
+    }
+
+    @GetMapping("/caracteristicas/{padreId}/hijos")
+    public Iterable<Caracteristica> getHijos(@PathVariable String padreId) {
+        return service.getHijos(padreId);
+    }
+
+    @GetMapping("/{id}")
+    public Puesto getById(@PathVariable String id) {
+        return service.findPuestoById(id);
     }
 }
