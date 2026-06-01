@@ -42,3 +42,15 @@ VALUES
 ('66666666-6666-6666-6666-666666666666', '22222222-2222-2222-2222-222222222222', 3),
 ('77777777-7777-7777-7777-777777777777', '33333333-3333-3333-3333-333333333333', 5),
 ('77777777-7777-7777-7777-777777777777', '11111111-1111-1111-1111-111111111111', 2);
+
+-- =========================
+-- ADMIN
+-- =========================
+INSERT INTO Admin
+(id, correo, nombre, descripcion, telefono, contrasenna)
+VALUES
+(111, 'admin1@gmail.com', 'admin1', 'Administrador del sistema', 12345678, '$2b$12$VRBu57Y0Dg8uSCmrIPX6JuoEF97By3REXRoiqYVIEn4/iAoDUlPc2');
+
+-- Empresa: TechniRedes@gmail.com, contrasennia: 1234
+
+--Oferente: Juan@gmail.com, contrasennia: 1234

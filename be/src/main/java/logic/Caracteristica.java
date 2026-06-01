@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ public class Caracteristica {
     @Id
     @Size(max = 160)
     @Column(name = "caracteristica_id", nullable = false, length = 160)
+    @JsonProperty("id")
     private String caracteristicaId;
 
     @Size(max = 255)

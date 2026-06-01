@@ -162,6 +162,15 @@ CREATE TABLE IF NOT EXISTS `infoempleo`.`Puesto_has_Caracteristica` (
 ENGINE = InnoDB;
 
 
+-- =========================
+-- ADMIN DATA
+-- =========================
+INSERT INTO Admin
+(id, correo, nombre, descripcion, telefono, contrasenna)
+VALUES
+(111, 'admin1@gmail.com', 'admin1', 'Administrador del sistema', 12345678, '$2b$12$VRBu57Y0Dg8uSCmrIPX6JuoEF97By3REXRoiqYVIEn4/iAoDUlPc2');
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
