@@ -1,4 +1,4 @@
-package logic;
+package pogra4.be.logic;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

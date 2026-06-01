@@ -1,4 +1,4 @@
-package logic;
+package pogra4.be.logic;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

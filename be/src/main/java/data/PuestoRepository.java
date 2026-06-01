@@ -1,6 +1,6 @@
-package data;
+package pogra4.be.data;
 
-import logic.Puesto;
+import pogra4.be.logic.Puesto;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
