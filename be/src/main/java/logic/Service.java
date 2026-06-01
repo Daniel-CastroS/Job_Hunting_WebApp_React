@@ -63,4 +63,9 @@ public class Service {
     public Oferente findOferenteByCorreo(String correo) {
         return oferentes.findByCorreo(correo);
     }
+
+    public java.util.List<CandidatoDTO> buscarCandidatos(String puestoId) {
+        // TODO: Implement candidate search logic. Return empty list for now to compile.
+        return java.util.Collections.emptyList();
+    }
 }
