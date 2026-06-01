@@ -18,11 +18,25 @@ public class Service {
     private OferenteRepository oferentes;
     @Autowired
     private pogra4.be.data.OferenteHasCaracteristicaRepository habilidadesRepo;
+    @Autowired
+    private pogra4.be.data.PuestoHasCaracteristicaRepository puestoHasCaracteristicaRepo;
     public Iterable<Empresa> empresasAll() {
         return empresas.findAll();
     }
     public Iterable<Admin> adminsAll() { return admins.findAll();}
     public Iterable<Puesto> puestosAll() { return puestos.findAll();}
+    public Iterable<Puesto> ultimosPublicos() {
+        java.util.List<Puesto> all = new java.util.ArrayList<>();
+        for (Puesto p : puestos.findAll()) {
+            if (p.getActivo() != null && p.getActivo() == 1 && p.getTipo() != null && p.getTipo().equalsIgnoreCase("publico")) {
+                all.add(p);
+            }
+        }
+        all.sort((a,b) -> b.getFechaRegistro().compareTo(a.getFechaRegistro()));
+        java.util.List<Puesto> res = new java.util.ArrayList<>();
+        for (int i = 0; i < Math.min(5, all.size()); i++) res.add(all.get(i));
+        return res;
+    }
     public Iterable<Caracteristica> carecteristicasAll() { return carecteristica.findAll();}
     public Iterable<Oferente> oferentesAll() { return oferentes.findAll();}
 
@@ -67,8 +81,35 @@ public class Service {
     }
 
     public java.util.List<CandidatoDTO> buscarCandidatos(String puestoId) {
-        // TODO: Implement candidate search logic. Return empty list for now to compile.
-        return java.util.Collections.emptyList();
+        Puesto p = puestos.findById(puestoId).orElse(null);
+        if (p == null) return java.util.Collections.emptyList();
+        java.util.List<PuestoHasCaracteristica> reqs = puestoHasCaracteristicaRepo.findByPuestoId(puestoId);
+        if (reqs == null || reqs.isEmpty()) return java.util.Collections.emptyList();
+        int total = reqs.size();
+        java.util.Map<String,Integer> reqMap = new java.util.HashMap<>();
+        for (PuestoHasCaracteristica phc : reqs) {
+            if (phc.getCaracteristicaCaracteristica()!=null)
+                reqMap.put(phc.getCaracteristicaCaracteristica().getCaracteristicaId(), phc.getNivel() == null ? 1 : phc.getNivel());
+        }
+        java.util.List<CandidatoDTO> res = new java.util.ArrayList<>();
+        for (Oferente o : oferentes.findAll()) {
+            if (o.getEstado() == null || !o.getEstado().equalsIgnoreCase("aprobado")) continue;
+            java.util.List<OferenteHasCaracteristica> hov = habilidadesRepo.findByOferenteId(o.getId());
+            java.util.Map<String,Integer> have = new java.util.HashMap<>();
+            for (OferenteHasCaracteristica oh : hov) {
+                if (oh.getCaracteristicaCaracteristica()!=null)
+                    have.put(oh.getCaracteristicaCaracteristica().getCaracteristicaId(), oh.getNivel()==null?1:oh.getNivel());
+            }
+            int matched = 0;
+            for (java.util.Map.Entry<String,Integer> e : reqMap.entrySet()) {
+                Integer he = have.get(e.getKey());
+                if (he != null && he >= e.getValue()) matched++;
+            }
+            int porcentaje = (int) Math.round(100.0 * matched / total);
+            res.add(new CandidatoDTO(o.getId(), o.getNombre(), o.getPrimerApellido(), porcentaje));
+        }
+        res.sort((a,b) -> Integer.compare(b.porcentajeCoincidencia(), a.porcentajeCoincidencia()));
+        return res;
     }
 
     public Iterable<Puesto> puestosPorEmpresa(String empresaId) {
@@ -91,6 +132,22 @@ public class Service {
         p.setActivo((byte)1);
         p.setFechaRegistro(java.time.Instant.now());
         puestos.save(p);
+        if (caracteristicaIds != null) {
+            for (int i = 0; i < caracteristicaIds.size(); i++) {
+                String cid = caracteristicaIds.get(i);
+                Integer niv = (niveles != null && niveles.size() > i) ? niveles.get(i) : 1;
+                Caracteristica c = carecteristica.findById(cid).orElse(null);
+                PuestoHasCaracteristica phc = new PuestoHasCaracteristica();
+                PuestoHasCaracteristicaId id = new PuestoHasCaracteristicaId();
+                id.setPuestoId(p.getId());
+                id.setCaracteristicaCaracteristicaId(cid);
+                phc.setId(id);
+                phc.setPuesto(p);
+                phc.setCaracteristicaCaracteristica(c);
+                phc.setNivel(niv);
+                puestoHasCaracteristicaRepo.save(phc);
+            }
+        }
     }
 
     public Puesto findPuestoById(String id) {

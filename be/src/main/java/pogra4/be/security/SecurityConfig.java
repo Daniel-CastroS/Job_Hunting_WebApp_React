@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/oferentes/registro").permitAll()
                         .requestMatchers("/api/puestos/ultimos").permitAll()
                         .requestMatchers("/api/puestos/buscar").permitAll()
-                        .requestMatchers("/api/puestos/caracteristicas").permitAll()
+                        .requestMatchers("/api/puestos/caracteristicas", "/api/puestos/caracteristicas/**").permitAll()
 
                         // ----- Empresa -----
                         .requestMatchers("/api/empresa/**").hasAuthority("SCOPE_EMPRESA")

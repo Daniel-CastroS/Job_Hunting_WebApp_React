@@ -1,122 +1,139 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router';
+import logo from './assets/logo.png';
+import './App.css';
+import './css/Common.css';
+import Puestos from './Puestos.jsx';
+import Buscar from './pages/Buscar.jsx';
+import RegistroEmpresa from './pages/RegistroEmpresa.jsx';
+import RegistroOferente from './pages/RegistroOferente.jsx';
+import DashboardEmpresa from './pages/DashboardEmpresa.jsx';
+import DashboardOferente from './pages/DashboardOferente.jsx';
+import DashboardAdmin from './pages/DashboardAdmin.jsx';
+import LoginModal from './components/LoginModal.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    return {
+      token,
+      rol:    localStorage.getItem('rol'),
+      id:     localStorage.getItem('id'),
+      nombre: localStorage.getItem('nombre'),
+    };
+  });
+  const [showLogin, setShowLogin] = useState(false);
+
+  function handleLogin(data) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('rol',    data.rol);
+    localStorage.setItem('id',     String(data.id));
+    localStorage.setItem('nombre', data.nombre);
+    setUser(data);
+    setShowLogin(false);
+  }
+
+  function handleLogout() {
+    ['token', 'rol', 'id', 'nombre'].forEach(k => localStorage.removeItem(k));
+    setUser(null);
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <BrowserRouter>
+      <Header user={user} onLoginClick={() => setShowLogin(true)} onLogout={handleLogout} />
+      <Main user={user} />
+      <Footer />
+      {showLogin && (
+        <LoginModal onClose={() => setShowLogin(false)} onLogin={handleLogin} />
+      )}
+    </BrowserRouter>
+  );
 }
 
-export default App
+function Header({ user, onLoginClick, onLogout }) {
+  return (
+    <header className="header">
+      <div className="header-left">
+        <img src={logo} className="logo" alt="logo" />
+        <Link to="/" className="header-title-link">
+          <span className="header-title">BolsaEmpleo</span>
+        </Link>
+      </div>
+      <nav className="header-nav">
+        <Link to="/buscar">Buscar puestos</Link>
+        <Link to="/registro/empresa">Registrar empresa</Link>
+        <Link to="/registro/oferente">Registrar oferente</Link>
+      </nav>
+      {user ? (
+        <div className="user-info">
+          <span className="user-name">{user.nombre}</span>
+          <button className="login-btn" onClick={onLogout}>Cerrar sesión</button>
+        </div>
+      ) : (
+        <button className="login-btn" onClick={onLoginClick}>Login</button>
+      )}
+    </header>
+  );
+}
+
+function ProtectedRoute({ user, role, children }) {
+  if (!user) return <Navigate to="/" replace />;
+  if (role && user.rol !== role) return <Navigate to="/" replace />;
+  return children;
+}
+
+function Main({ user }) {
+  return (
+    <div className="main">
+      <Routes>
+        <Route path="/"                   element={<Puestos />} />
+        <Route path="/puestos"            element={<Puestos />} />
+        <Route path="/buscar"             element={<Buscar />} />
+        <Route path="/registro/empresa"   element={<RegistroEmpresa />} />
+        <Route path="/registro/oferente"  element={<RegistroOferente />} />
+        <Route
+          path="/dashboard/empresa"
+          element={
+            <ProtectedRoute user={user} role="EMPRESA">
+              <DashboardEmpresa />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/oferente"
+          element={
+            <ProtectedRoute user={user} role="OFERENTE">
+              <DashboardOferente />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/admin"
+          element={
+            <ProtectedRoute user={user} role="ADMIN">
+              <DashboardAdmin />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div>
+        <strong>Bolsa de Empleo</strong><br />
+        <small>Total Soft Inc.</small>
+      </div>
+      <div>
+        <small>Contacto: info@bolsaempleo.local</small><br />
+        <small>Créditos: Equipo de desarrollo</small>
+      </div>
+    </footer>
+  );
+}
+
+export default App;

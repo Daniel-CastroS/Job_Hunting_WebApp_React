@@ -57,7 +57,7 @@ public class LoginController {
                     if (!encoder.matches(request.contrasenna(), e.getContrasenna()))
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     String token = tokenService.generateToken(e.getId(), "EMPRESA", e.getNombre());
-                    return Map.of("token", token, "id", e.getId(), "nombre", e.getNombre(), "tipo", "EMPRESA");
+                    return Map.of("token", token, "id", e.getId(), "nombre", e.getNombre(), "rol", "EMPRESA");
                 }
 
                 case "OFERENTE" -> {
@@ -68,7 +68,7 @@ public class LoginController {
                     if (!encoder.matches(request.contrasenna(), o.getContrasenna()))
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     String token = tokenService.generateToken(o.getId(), "OFERENTE", o.getNombre());
-                    return Map.of("token", token, "id", o.getId(), "nombre", o.getNombre(), "tipo", "OFERENTE");
+                    return Map.of("token", token, "id", o.getId(), "nombre", o.getNombre(), "rol", "OFERENTE");
                 }
 
                 case "ADMIN" -> {
@@ -77,7 +77,7 @@ public class LoginController {
                     if (!encoder.matches(request.contrasenna(), a.getContrasenna()))
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     String token = tokenService.generateToken(a.getId(), "ADMIN", a.getNombre());
-                    return Map.of("token", token, "id", a.getId(), "nombre", a.getNombre(), "tipo", "ADMIN");
+                    return Map.of("token", token, "id", a.getId(), "nombre", a.getNombre(), "rol", "ADMIN");
                 }
 
                 default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo inválido");

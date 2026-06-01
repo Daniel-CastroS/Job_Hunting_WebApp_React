@@ -1,4 +1,4 @@
 package pogra4.be.logic;
 
-public record CandidatoDTO(String id, String nombre) {
+public record CandidatoDTO(String id, String nombre, String primerApellido, Integer porcentajeCoincidencia) {
 }
