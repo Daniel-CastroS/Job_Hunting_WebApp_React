@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BolsaEmpleo – Login</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* ── NAVBAR ── */
+        nav {
+            background: #222;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 48px;
+            gap: 24px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 15px;
+            text-decoration: none;
+        }
+        .nav-brand svg { width: 32px; height: 32px; }
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        nav a:hover { color: #fff; }
+        .nav-right { margin-left: auto; }
+
+        /* ── CONTENIDO ── */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: #e8e8e8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 32px 40px 40px;
+            width: 320px;
+            text-align: center;
+        }
+        .card h1 {
+            font-size: 20px;
+            font-weight: normal;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .avatar {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 20px;
+        }
+        .field {
+            text-align: left;
+            margin-bottom: 14px;
+        }
+        .field label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #444;
+        }
+        .field input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            font-size: 13px;
+            background: #fff;
+            outline: none;
+        }
+        .field input:focus {
+            border-color: #4a90d9;
+            box-shadow: 0 0 0 2px rgba(74,144,217,0.25);
+        }
+
+        .alert-error {
+            background: #fdd;
+            border: 1px solid #f99;
+            border-radius: 3px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: #c00;
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .btn-entrar {
+            background: #3a7bd5;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 8px 22px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .btn-entrar:hover { background: #2f6abf; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #222;
+            color: #ccc;
+            font-size: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        footer .left p { line-height: 1.6; }
+        footer .left p:first-child { color: #fff; font-weight: bold; }
+        footer .right { text-align: right; }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a class="nav-brand" th:href="@{/}">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="15" stroke="#5bc8d0" stroke-width="2"/>
+            <circle cx="16" cy="11" r="3" fill="#f0a500"/>
+            <rect x="13" y="15" width="6" height="7" rx="1" fill="#f0a500"/>
+            <circle cx="8"  cy="12" r="2.5" fill="#5bc8d0"/>
+            <rect x="5.5"  y="15.5" width="5" height="6" rx="1" fill="#5bc8d0"/>
+            <circle cx="24" cy="12" r="2.5" fill="#5bc8d0"/>
+            <rect x="21.5" y="15.5" width="5" height="6" rx="1" fill="#5bc8d0"/>
+        </svg>
+        BolsaEmpleo
+    </a>
+    <a th:href="@{/puestos/buscar}">Buscar puestos</a>
+    <a th:href="@{/registro/empresa}">Registro Empresa</a>
+    <a th:href="@{/registro/oferente}">Registro Oferente</a>
+    <a th:href="@{/login}" class="nav-right">Login</a>
+</nav>
+
+<!-- CONTENIDO -->
+<main>
+    <div class="card">
+        <h1>Login</h1>
+
+        <!-- Avatar genérico de persona -->
+        <svg class="avatar" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="26" cy="26" r="26" fill="#d0d8e8"/>
+            <circle cx="26" cy="20" r="9" fill="#7a9abf"/>
+            <ellipse cx="26" cy="42" rx="14" ry="9" fill="#7a9abf"/>
+        </svg>
+
+        <!-- Mensajes de error -->
+        <div class="alert-error" th:if="${param.error}">
+            Usuario o contraseña incorrectos.
+        </div>
+        <div class="alert-error" th:if="${param.inactivo}">
+            Tu cuenta aún no ha sido aprobada por el administrador.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <!-- Rol oculto: se puede cambiar si se añade selector de rol -->
+            <input type="hidden" id="rol" name="rol" value="empresa">
+
+            <div class="field">
+                <label id="label-usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario" required autocomplete="username">
+            </div>
+
+            <div class="field">
+                <label>Contraseña</label>
+                <input type="password" name="clave" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-entrar">Entrar</button>
+        </form>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="left">
+        <p>Bolsa de Empleo</p>
+        <p>Total Soft Inc.</p>
+    </div>
+    <div class="right">
+        <p>Contacto: info@bolsaempleo.local</p>
+        <p>Créditos: Equipo de desarrollo</p>
+    </div>
+</footer>
+
+</body>
+</html>
